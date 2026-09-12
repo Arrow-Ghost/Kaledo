@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav';
+import SmoothScroll from '../components/SmoothScroll';
+import CursorGlow from '../components/CursorGlow';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Kaledo — Academia × Industry Collaboration Portal',
+  description = 'Skill mapping, internships, and placements that connect students, industries, and academicians on one intelligent platform.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  <body class="bg-grid">
+    <div class="noise-overlay"></div>
+    <CursorGlow client:only="react" />
+    <SmoothScroll client:only="react" />
+    <Nav client:only="react" />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script src="../scripts/scrollReveal.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,328 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero3D from '../components/Hero3D';
+import StatCounter from '../components/StatCounter';
+import { ALL_SKILLS } from '../lib/skills';
+
+const features = [
+  {
+    title: 'Skill Assessment',
+    desc: 'A guided questionnaire evaluates technical and soft skills, generating a live skill profile with strengths and gaps mapped to industry benchmarks.',
+    tag: '01',
+    color: 'from-cyan/20 to-cyan/0',
+  },
+  {
+    title: 'Skill Mapping & Career Guidance',
+    desc: 'A recommendation engine matches your profile to job roles, industries, and learning paths — ranked by real fit, not guesswork.',
+    tag: '02',
+    color: 'from-violet/20 to-violet/0',
+  },
+  {
+    title: 'Internships & Placements',
+    desc: 'Industries post internships, apprenticeships, and jobs with required skills. Students get ranked recommendations and apply in one click.',
+    tag: '03',
+    color: 'from-pink/20 to-pink/0',
+  },
+  {
+    title: 'Industry Learning Programs',
+    desc: 'Companies publish certifications, workshops, and mentorships so students can close skill gaps before they even apply.',
+    tag: '04',
+    color: 'from-amber/20 to-amber/0',
+  },
+  {
+    title: 'Academic Collaboration',
+    desc: 'Faculty explore FDPs, consultancy, industrial training, and joint research — building a two-way bridge between classroom and industry.',
+    tag: '05',
+    color: 'from-cyan/20 to-cyan/0',
+  },
+  {
+    title: 'Institution Analytics',
+    desc: 'Dashboards track skill development, internship participation, and placement readiness across the entire student body in real time.',
+    tag: '06',
+    color: 'from-violet/20 to-violet/0',
+  },
+];
+
+const roles = [
+  {
+    role: 'student',
+    title: 'Students',
+    desc: 'Assess your skills, discover your best-fit roles, apply to internships, and build a verified digital portfolio.',
+    badge: 'bg-cyan/15 text-cyan',
+  },
+  {
+    role: 'industry',
+    title: 'Industry',
+    desc: 'Post internships and jobs, publish learning programs, and shortlist candidates ranked by skill match.',
+    badge: 'bg-violet/15 text-violet',
+  },
+  {
+    role: 'academician',
+    title: 'Academicians',
+    desc: 'Discover FDPs, consultancy, industrial training, and research collaborations with industry partners.',
+    badge: 'bg-pink/15 text-pink',
+  },
+  {
+    role: 'institution',
+    title: 'Institutions',
+    desc: 'Monitor skill development, internship participation, and placement outcomes — institution admin accounts are provisioned after a quick verification, not self-serve.',
+    badge: 'bg-amber/15 text-amber',
+  },
+];
+
+const steps = [
+  {
+    n: '1',
+    title: 'Build your profile',
+    desc: 'Take the skill assessment or post your first opportunity.',
+    color: 'cyan',
+    icon: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20.5c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5"/>',
+  },
+  {
+    n: '2',
+    title: 'Get matched',
+    desc: 'Our engine scores fit between skills, roles, and opportunities.',
+    color: 'violet',
+    icon: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor" stroke="none"/>',
+  },
+  {
+    n: '3',
+    title: 'Act on it',
+    desc: 'Apply, shortlist, register, or enroll — all tracked in one place.',
+    color: 'pink',
+    icon: '<path d="M12 2 4 13h6l-1 9 9-13h-6l1-7Z" stroke-linejoin="round"/>',
+  },
+  {
+    n: '4',
+    title: 'Grow, measurably',
+    desc: 'Dashboards show progress for every stakeholder, every step.',
+    color: 'amber',
+    icon: '<path d="M3 17 9 11 13 15 21 7" stroke-linejoin="round"/><path d="M15 7h6v6" stroke-linejoin="round"/>',
+  },
+];
+
+const STEP_COLOR: Record<string, string> = {
+  cyan: 'border-cyan/40 text-cyan bg-cyan/10',
+  violet: 'border-violet/40 text-violet bg-violet/10',
+  pink: 'border-pink/40 text-pink bg-pink/10',
+  amber: 'border-amber/40 text-amber bg-amber/10',
+};
+---
+
+<Layout>
+  <!-- HERO -->
+  <section class="relative flex min-h-screen items-center overflow-hidden pt-28">
+    <div class="absolute inset-0 z-0">
+      <Hero3D client:only="react" />
+    </div>
+    <div
+      class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-ink/10 to-ink"
+    >
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-7xl px-6 py-20">
+      <div class="max-w-3xl" data-fade-up data-fade-group="hero">
+        <span class="pill">
+          <span class="h-1.5 w-1.5 rounded-full bg-cyan"></span>
+          Academia × Industry Collaboration Portal
+        </span>
+        <h1 class="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+          Close the skill gap.<br />
+          <span class="gradient-text">Open every door.</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg text-fg-muted">
+          One platform where students map their skills to real careers, industries find
+          ready talent, and academicians build the bridge between classroom and industry —
+          with matching, applications, and analytics that actually work.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href="/auth/sign-up" class="btn-primary">
+            Get started free
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="#how-it-works" class="btn-ghost">See how it works</a>
+        </div>
+      </div>
+
+      <div
+        class="mt-20 grid max-w-3xl grid-cols-2 gap-8 sm:grid-cols-4"
+        data-fade-up
+        data-fade-group="hero-stats"
+      >
+        <StatCounter client:visible value={12400} suffix="+" label="Students mapped" />
+        <StatCounter client:visible value={5} suffix="" label="Industry sectors seeded" />
+        <StatCounter client:visible value={8} suffix="" label="Live opportunities" />
+        <StatCounter client:visible value={14} suffix="" label="Skills tracked" />
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-fg-faint">
+      <div class="flex flex-col items-center gap-2">
+        <span class="text-xs uppercase tracking-[0.2em]">Scroll</span>
+        <span class="h-8 w-px bg-gradient-to-b from-fg-faint to-transparent"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="relative z-10 mx-auto max-w-5xl px-6 py-28 text-center">
+    <p
+      class="font-display text-2xl font-medium leading-relaxed text-fg-muted sm:text-3xl"
+      data-fade-up
+    >
+      Students don't know what skills the market actually wants. Industries can't find
+      job-ready candidates. Academicians have no visibility into real internship demand.
+      <span class="gradient-text"> Kaledo fixes all three at once.</span>
+    </p>
+  </section>
+
+  <!-- SKILLS MARQUEE -->
+  <section class="relative z-10 py-6" aria-label="Skills tracked on the platform">
+    <div class="marquee-mask overflow-hidden">
+      <div class="marquee-track">
+        {
+          [...ALL_SKILLS, ...ALL_SKILLS].map((skill) => (
+            <span class="mx-3 inline-flex shrink-0 items-center gap-2 rounded-full border border-line px-5 py-2 font-display text-sm text-fg-muted">
+              <span class="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-cyan to-violet" />
+              {skill}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="relative z-10 mx-auto max-w-7xl px-6 py-16">
+    <div class="max-w-2xl" data-fade-up>
+      <span class="pill">Platform features</span>
+      <h2 class="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl" data-split-reveal>
+        Everything the lifecycle needs, in one place.
+      </h2>
+    </div>
+
+    <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((f) => (
+          <div
+            class={`glass glass-hover relative overflow-hidden rounded-2xl p-6`}
+            data-fade-up
+            data-fade-group="features"
+          >
+            <div class={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br ${f.color} blur-2xl`} />
+            <span class="font-display text-xs font-semibold text-fg-faint">{f.tag}</span>
+            <h3 class="mt-3 font-display text-xl font-semibold">{f.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{f.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="relative z-10 mx-auto max-w-7xl px-6 py-28">
+    <div class="max-w-2xl" data-fade-up>
+      <span class="pill">How it works</span>
+      <h2 class="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl" data-split-reveal>
+        From profile to placement in four steps.
+      </h2>
+    </div>
+
+    <div class="relative mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="absolute left-0 right-0 top-6 hidden h-px lg:block">
+        <div class="h-full bg-line"></div>
+        <div
+          data-draw-line
+          class="absolute inset-y-0 left-0 w-full origin-left scale-x-0 bg-gradient-to-r from-cyan via-violet to-pink"
+        >
+        </div>
+      </div>
+      {
+        steps.map((s) => (
+          <div data-fade-up data-fade-group="steps" class="relative">
+            <div
+              class={`relative flex h-12 w-12 items-center justify-center rounded-full border glass ${STEP_COLOR[s.color]}`}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                set:html={s.icon}
+              />
+              <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-surface text-[10px] font-bold text-fg-muted ring-1 ring-line">
+                {s.n}
+              </span>
+            </div>
+            <h3 class="mt-4 font-display text-lg font-semibold">{s.title}</h3>
+            <p class="mt-2 text-sm text-fg-muted">{s.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="relative z-10 mx-auto max-w-7xl px-6 py-16">
+    <div class="max-w-2xl" data-fade-up>
+      <span class="pill">Built for every stakeholder</span>
+      <h2 class="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl" data-split-reveal>
+        Pick your role. Start in seconds.
+      </h2>
+    </div>
+
+    <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        roles.map((r) => (
+          <a
+            href="/auth/sign-up"
+            class="glass glass-hover group flex flex-col justify-between rounded-2xl p-6"
+            data-fade-up
+            data-fade-group="roles"
+          >
+            <div>
+              <span class={`inline-flex h-10 w-10 items-center justify-center rounded-xl font-display font-bold ${r.badge}`}>
+                {r.title[0]}
+              </span>
+              <h3 class="mt-4 font-display text-xl font-semibold">{r.title}</h3>
+              <p class="mt-2 text-sm text-fg-muted">{r.desc}</p>
+            </div>
+            <span class="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-fg group-hover:gap-2 transition-all">
+              Continue <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="relative z-10 mx-auto max-w-5xl px-6 py-28">
+    <div
+      class="glass relative overflow-hidden rounded-3xl px-8 py-16 text-center sm:px-16"
+      data-fade-up
+    >
+      <div
+        class="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-cyan/20 blur-3xl"
+      >
+      </div>
+      <div
+        class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-pink/20 blur-3xl"
+      >
+      </div>
+      <h2 class="relative font-display text-4xl font-bold tracking-tight sm:text-5xl" data-split-reveal>
+        Ready to bridge the gap?
+      </h2>
+      <p class="relative mx-auto mt-4 max-w-xl text-fg-muted">
+        Join as a student, industry partner, academician, or institution — set up in under a
+        minute, no credit card, no waiting.
+      </p>
+      <div class="relative mt-8 flex flex-wrap items-center justify-center gap-4">
+        <a href="/auth/sign-up" class="btn-primary">Get started free →</a>
+      </div>
+    </div>
+  </section>
+</Layout>

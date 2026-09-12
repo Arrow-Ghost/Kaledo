@@ -1,0 +1,20 @@
+{
+  "name": "kaledo-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend API service for Kaledo (Academia x Industry Collaboration Portal)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
