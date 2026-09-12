@@ -5,6 +5,7 @@
   "description": "Backend API service for Kaledo (Academia x Industry Collaboration Portal)",
   "main": "server.js",
   "scripts": {
+    "build": "node -e \"console.log('Backend ready')\"",
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
