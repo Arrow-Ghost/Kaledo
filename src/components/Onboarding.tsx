@@ -67,7 +67,6 @@ export default function Onboarding() {
   const [targetEmail, setTargetEmail] = useState('');
   const [requestId, setRequestId] = useState<string | null>(null);
   const [otp, setOtp] = useState('');
-  const [otpInfo, setOtpInfo] = useState<{ dev_mode: boolean; message?: string } | null>(null);
   const [otpError, setOtpError] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -187,8 +186,7 @@ export default function Onboarding() {
         graduation_year: gradYear ? Number(gradYear) : undefined,
       });
       setRequestId(id);
-      const res = await sendInstitutionOtp(id, targetEmail);
-      setOtpInfo(res);
+      await sendInstitutionOtp(id, targetEmail);
       setStep('otp');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not start verification.');
@@ -461,9 +459,7 @@ export default function Onboarding() {
         <div className="glass mt-10 space-y-4 rounded-2xl p-6 sm:p-8">
           <h3 className="font-display text-lg font-semibold">Enter your verification code</h3>
           <p className="text-sm text-fg-muted">
-            {otpInfo?.dev_mode
-              ? otpInfo.message
-              : `We sent a 6-digit code to ${targetEmail}. It expires in ${otpInfo ? 10 : 10} minutes.`}
+            We sent a 6-digit code to {targetEmail}. It expires in 10 minutes.
           </p>
           {otpError && <p className="text-sm text-pink">{otpError}</p>}
           <Field label="6-digit code" value={otp} onChange={setOtp} placeholder="123456" />

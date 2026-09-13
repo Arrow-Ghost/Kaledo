@@ -58,8 +58,8 @@ function VerificationStatusInner() {
     setError('');
     setBusy(true);
     try {
-      const res = await sendInstitutionOtp(req.id, otpEmail);
-      setOtpInfo(res.dev_mode ? res.message ?? 'Code generated (dev mode).' : `Code sent to ${otpEmail}.`);
+      await sendInstitutionOtp(req.id, otpEmail);
+      setOtpInfo(`Code sent to ${otpEmail}.`);
       setResendId(req.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not send code.');

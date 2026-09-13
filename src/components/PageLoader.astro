@@ -1,0 +1,240 @@
+---
+---
+
+<div id="page-loader" class="page-loader" transition:persist aria-hidden="true">
+  <div class="page-loader__field">
+    <span class="page-loader__particle" style="--i: 0"></span>
+    <span class="page-loader__particle" style="--i: 1"></span>
+    <span class="page-loader__particle" style="--i: 2"></span>
+    <span class="page-loader__particle" style="--i: 3"></span>
+    <span class="page-loader__particle" style="--i: 4"></span>
+    <span class="page-loader__particle" style="--i: 5"></span>
+  </div>
+
+  <div class="page-loader__core">
+    <span class="page-loader__ring"></span>
+    <span class="page-loader__ring page-loader__ring--2"></span>
+    <span class="page-loader__badge">K</span>
+  </div>
+
+  <p class="page-loader__word">
+    Kale<span class="gradient-text">do</span>
+  </p>
+  <div class="page-loader__bar"><span></span></div>
+</div>
+
+<style>
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    background: var(--color-ink);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s;
+  }
+  .page-loader--hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .page-loader__field {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .page-loader__particle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--color-cyan);
+    opacity: 0;
+    animation: loader-drift 3.6s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.5s);
+  }
+  .page-loader__particle:nth-child(3n + 1) {
+    background: var(--color-violet);
+  }
+  .page-loader__particle:nth-child(3n + 2) {
+    background: var(--color-pink);
+  }
+
+  .page-loader__core {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+  .page-loader__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: conic-gradient(
+      from 0deg,
+      var(--color-cyan),
+      var(--color-violet) 40%,
+      var(--color-pink) 70%,
+      transparent 100%
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+    animation: loader-spin 1.3s linear infinite;
+  }
+  .page-loader__ring--2 {
+    inset: 0.7rem;
+    animation-duration: 1.8s;
+    animation-direction: reverse;
+    opacity: 0.6;
+  }
+  .page-loader__badge {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--color-ink);
+    background: linear-gradient(135deg, var(--color-cyan), var(--color-violet));
+    box-shadow: 0 0 26px -4px color-mix(in srgb, var(--color-violet) 70%, transparent);
+    animation: loader-pulse 1.6s ease-in-out infinite;
+  }
+
+  .page-loader__word {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    color: var(--color-fg);
+    animation: loader-fade 1.6s ease-in-out infinite;
+  }
+
+  .page-loader__bar {
+    width: 7rem;
+    height: 3px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--color-line);
+  }
+  .page-loader__bar span {
+    display: block;
+    width: 40%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(100deg, var(--color-cyan), var(--color-violet), var(--color-pink));
+    animation: loader-bar 1.15s ease-in-out infinite;
+  }
+
+  @keyframes loader-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loader-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+  }
+  @keyframes loader-fade {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes loader-bar {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(350%);
+    }
+  }
+  @keyframes loader-drift {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg)) translateX(70px) scale(0.6);
+    }
+    30% {
+      opacity: 0.7;
+    }
+    70% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg + 45deg)) translateX(150px) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-loader__ring,
+    .page-loader__badge,
+    .page-loader__word,
+    .page-loader__bar span,
+    .page-loader__particle {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const MIN_VISIBLE_MS = 320;
+  let shownAt = 0;
+
+  function getLoader() {
+    return document.getElementById('page-loader');
+  }
+
+  function showLoader() {
+    const el = getLoader();
+    if (!el) return;
+    shownAt = performance.now();
+    el.classList.remove('page-loader--hidden');
+  }
+
+  function hideLoader() {
+    const el = getLoader();
+    if (!el) return;
+    const elapsed = performance.now() - shownAt;
+    const wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
+    window.setTimeout(() => el.classList.add('page-loader--hidden'), wait);
+  }
+
+  // The loader div uses transition:persist so it survives page swaps untouched —
+  // which also means this script tag, living inside it, does NOT re-run on later
+  // navigations. Both listeners have to be bound once, up front, rather than
+  // relying on the script re-executing per page like scrollReveal.ts does.
+  const w = window as unknown as { __kaledoLoaderBound?: boolean };
+  if (!w.__kaledoLoaderBound) {
+    w.__kaledoLoaderBound = true;
+    document.addEventListener('astro:before-preparation', showLoader);
+    document.addEventListener('astro:page-load', hideLoader);
+  }
+
+  // Covers the very first paint, in case astro:page-load already fired before
+  // this script ran (Astro dispatches it once on initial load too).
+  hideLoader();
+</script>

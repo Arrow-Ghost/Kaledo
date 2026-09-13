@@ -5,6 +5,7 @@ import Nav from '../components/Nav';
 import SmoothScroll from '../components/SmoothScroll';
 import CursorGlow from '../components/CursorGlow';
 import Footer from '../components/Footer.astro';
+import PageLoader from '../components/PageLoader.astro';
 
 interface Props {
   title?: string;
@@ -28,6 +29,7 @@ const {
     <ClientRouter />
   </head>
   <body class="bg-grid">
+    <PageLoader />
     <div class="noise-overlay"></div>
     <CursorGlow client:only="react" />
     <SmoothScroll client:only="react" />

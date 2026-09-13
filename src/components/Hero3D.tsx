@@ -52,7 +52,10 @@ export default function Hero3D() {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Capped at 1.5 rather than the display's true devicePixelRatio (often 2-3 on
+    // phones) — halves the fragment-shader workload for a particle field where the
+    // extra sharpness isn't visible, and was the single biggest GPU cost here.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
 
@@ -210,7 +213,6 @@ export default function Hero3D() {
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(mount);
 
-    let raf = 0;
     const clock = new THREE.Clock();
 
     const renderOnce = () => renderer.render(scene, camera);
@@ -261,17 +263,45 @@ export default function Hero3D() {
       lineMat.opacity = 0.35 * fade;
 
       renderOnce();
-      raf = requestAnimationFrame(animate);
     };
+
+    // Drive the render loop off GSAP's own ticker instead of a separate
+    // requestAnimationFrame — Lenis (SmoothScroll.tsx) already ticks from the same
+    // ticker, so scroll and the particle animation land on one shared frame instead
+    // of two independently-scheduled rAF loops racing each other.
+    let ticking = false;
+    const startTicking = () => {
+      if (ticking || prefersReducedMotion || !gsapRefs) return;
+      ticking = true;
+      gsapRefs.gsap.ticker.add(animate);
+    };
+    const stopTicking = () => {
+      if (!ticking || !gsapRefs) return;
+      ticking = false;
+      gsapRefs.gsap.ticker.remove(animate);
+    };
+
+    // The hero is tall and near the top of a long scrolling page — once the user
+    // has scrolled well past it, there's no reason to keep running a full particle
+    // simulation + WebGL render every frame. Pause while off-screen, resume when
+    // it re-enters the viewport.
+    const visibilityObserver = prefersReducedMotion
+      ? null
+      : new IntersectionObserver(
+          ([entry]) => (entry.isIntersecting ? startTicking() : stopTicking()),
+          { threshold: 0 }
+        );
+    visibilityObserver?.observe(mount);
 
     if (prefersReducedMotion) {
       renderOnce();
     } else {
-      animate();
+      startTicking();
     }
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopTicking();
+      visibilityObserver?.disconnect();
       resizeObserver.disconnect();
       scrollTrigger?.kill();
       window.removeEventListener('pointermove', onPointerMove);
