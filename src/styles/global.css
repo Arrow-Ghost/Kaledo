@@ -169,6 +169,14 @@ input[type='radio'] {
   white-space: nowrap;
 }
 
+/* The footer is the only server-rendered content on island-driven pages, so
+   without this it paints first — alone, at the top of an empty viewport — before
+   React mounts the actual page. PageLoader adds .app-ready once content exists,
+   making the footer the last thing to appear rather than the first. */
+body:not(.app-ready) footer {
+  visibility: hidden;
+}
+
 .noise-overlay {
   pointer-events: none;
   position: fixed;

@@ -202,13 +202,8 @@
 
 <script>
   const MIN_VISIBLE_MS = 320;
-  // Astro's astro:page-load fires once the new page's own scripts have run — but
-  // client:only React islands (RoleGate, VerificationStatus, etc.) still have their
-  // own async session check to resolve after that, and mark themselves with
-  // data-app-loading while it's in flight. Without waiting on that too, the loader
-  // hides early and exposes their in-page spinner (and the footer sitting under it).
-  const MAX_WAIT_MS = 4000; // safety net: never block the page forever if something hangs
-  const POLL_MS = 60;
+  const MAX_WAIT_MS = 6000; // safety net: never trap the page behind the loader
+  const POLL_MS = 50;
   let shownAt = 0;
 
   function getLoader() {
@@ -219,23 +214,45 @@
     const el = getLoader();
     if (!el) return;
     shownAt = performance.now();
+    document.body.classList.remove('app-ready');
     el.classList.remove('page-loader--hidden');
   }
 
-  function appStillLoading() {
-    return document.querySelector('[data-app-loading]') !== null;
+  function pageContentReady() {
+    const main = document.querySelector('main');
+    if (!main) return true;
+
+    // Every page's content is a client:only island, which ships as an EMPTY
+    // <astro-island> placeholder and only fills in once React mounts. Until then
+    // the document's sole visible content is the footer — which is exactly why it
+    // used to land at the top of the viewport on every page load. Checking only
+    // for data-app-loading markers isn't enough: at this point React hasn't run,
+    // so no marker exists yet and "no markers" would wrongly read as "ready".
+    const islands = main.querySelectorAll('astro-island');
+    for (let i = 0; i < islands.length; i++) {
+      if (islands[i].children.length === 0) return false;
+    }
+
+    // Mounted, but a session/verification check may still be resolving inside.
+    return document.querySelector('[data-app-loading]') === null;
+  }
+
+  function reveal() {
+    // Footer is CSS-gated on this class, so page content and footer appear together
+    // instead of the footer arriving first, alone, at the top of an empty page.
+    document.body.classList.add('app-ready');
+    getLoader()?.classList.add('page-loader--hidden');
   }
 
   function hideLoader() {
-    const el = getLoader();
-    if (!el) return;
+    if (!getLoader()) return;
     // On the very first page load, astro:before-preparation never fired, so
     // shownAt is still 0 — don't invent an artificial minimum wait in that case.
     const start = shownAt || performance.now() - MIN_VISIBLE_MS;
     const attempt = () => {
       const elapsed = performance.now() - start;
-      if ((elapsed >= MIN_VISIBLE_MS && !appStillLoading()) || elapsed >= MAX_WAIT_MS) {
-        el.classList.add('page-loader--hidden');
+      if ((elapsed >= MIN_VISIBLE_MS && pageContentReady()) || elapsed >= MAX_WAIT_MS) {
+        reveal();
         return;
       }
       window.setTimeout(attempt, POLL_MS);
