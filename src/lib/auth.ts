@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { setRememberMe, supabase } from './supabase';
 import type {
   AppRole,
   FacultyOnboardingProfile,
@@ -31,13 +31,18 @@ export async function signUpWithEmail(email: string, password: string, fullName:
   return data;
 }
 
-export async function signInWithEmail(email: string, password: string) {
+export async function signInWithEmail(email: string, password: string, remember = true) {
+  // Must run before the request — it decides which store the returned tokens land in.
+  setRememberMe(remember);
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(remember = true) {
+  // Set before the redirect so the PKCE verifier and the session that comes back
+  // both end up in the same store.
+  setRememberMe(remember);
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo: `${window.location.origin}/auth/callback` },

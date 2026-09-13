@@ -1,13 +1,19 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { GOOGLE_OAUTH_ENABLED, signInWithEmail, signInWithGoogle } from '../../lib/auth';
+import { getRememberMe } from '../../lib/supabase';
 import { useSession } from '../../lib/useSession';
 
 export default function SignIn() {
   const { hasAuthSession, ready } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(true);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  // Read on mount rather than as useState's initial value: this component is
+  // client:only, but the initializer would still run wherever window is undefined.
+  useEffect(() => setRemember(getRememberMe()), []);
 
   useEffect(() => {
     if (ready && hasAuthSession) window.location.href = '/onboarding';
@@ -18,7 +24,7 @@ export default function SignIn() {
     setError('');
     setBusy(true);
     try {
-      await signInWithEmail(email, password);
+      await signInWithEmail(email, password, remember);
       window.location.href = '/onboarding';
     } catch (err) {
       setError(
@@ -34,7 +40,7 @@ export default function SignIn() {
   async function handleGoogle() {
     setError('');
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(remember);
     } catch {
       setError('Google sign-in could not be completed. Please try again.');
     }
@@ -84,7 +90,16 @@ export default function SignIn() {
             placeholder="Password"
             className="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none focus:border-violet/60"
           />
-          <div className="text-right">
+          <div className="flex items-center justify-between gap-3">
+            <label className="flex cursor-pointer select-none items-center gap-2 text-xs text-fg-muted">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                className="h-3.5 w-3.5 cursor-pointer rounded border border-line"
+              />
+              Keep me signed in
+            </label>
             <a href="/auth/forgot-password" className="text-xs text-fg-faint hover:text-fg">
               Forgot password?
             </a>
