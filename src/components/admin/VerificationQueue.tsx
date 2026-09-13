@@ -67,7 +67,7 @@ function VerificationQueueInner() {
     }
   }
 
-  if (loading) return null;
+  if (loading) return <span data-app-loading="true" className="hidden" />;
 
   return (
     <div className="mx-auto max-w-5xl px-6 pb-28 pt-32">
@@ -149,6 +149,6 @@ export default function VerificationQueue() {
     }
   }, [ready, roles]);
 
-  if (!ready || redirected) return null;
+  if (!ready || redirected) return <span data-app-loading="true" className="hidden" />;
   return <VerificationQueueInner />;
 }

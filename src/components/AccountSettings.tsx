@@ -153,6 +153,6 @@ export default function AccountSettings() {
     if (ready && !user) window.location.href = '/auth/sign-in';
   }, [ready, user]);
 
-  if (!ready || !user) return null;
+  if (!ready || !user) return <span data-app-loading="true" className="hidden" />;
   return <AccountSettingsInner />;
 }

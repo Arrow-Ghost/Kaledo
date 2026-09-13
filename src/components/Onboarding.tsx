@@ -249,7 +249,7 @@ export default function Onboarding() {
     }
   }
 
-  if (!ready || !hasAuthSession) return null;
+  if (!ready || !hasAuthSession) return <span data-app-loading="true" className="hidden" />;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-28">

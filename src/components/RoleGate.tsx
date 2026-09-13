@@ -49,12 +49,18 @@ export default function RoleGate({
 
   if (!ready || redirecting) {
     return (
-      <Centered>
-        <div className="flex flex-col items-center gap-4 text-fg-muted">
-          <div className="h-9 w-9 animate-spin rounded-full border-2 border-line border-t-cyan" />
-          <p className="font-display text-sm tracking-wide">Loading your workspace…</p>
-        </div>
-      </Centered>
+      // data-app-loading tells the full-screen PageLoader (src/components/PageLoader.astro)
+      // to keep covering the page — this spinner resolves well after Astro's own
+      // page-load event fires, so without this marker the site-wide loader would
+      // hide too early and briefly expose this + the footer underneath it.
+      <div data-app-loading="true">
+        <Centered>
+          <div className="flex flex-col items-center gap-4 text-fg-muted">
+            <div className="h-9 w-9 animate-spin rounded-full border-2 border-line border-t-cyan" />
+            <p className="font-display text-sm tracking-wide">Loading your workspace…</p>
+          </div>
+        </Centered>
+      </div>
     );
   }
 

@@ -83,7 +83,7 @@ function VerificationStatusInner() {
     }
   }
 
-  if (!ready || loading) return null;
+  if (!ready || loading) return <span data-app-loading="true" className="hidden" />;
 
   return (
     <div className="mx-auto max-w-3xl px-6 pb-28 pt-32">
